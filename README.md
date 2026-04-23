@@ -59,3 +59,14 @@ Partition sales_line_items and inventory_snapshots by created_at range (monthly)
 Index (org_id, transacted_at) on sales_transactions and (inventory_item_id, snapshotted_at) on inventory_snapshots
 Use timestamptz (not timestamp) for all time columns — timezone-aware from day one
 Add a deleted_at soft-delete column on products, inventory_items, and suppliers — enterprise systems never hard-delete
+
+
+Also take into consideration 
+
+Base kitchen / preferred supplier % — when you have multiple suppliers for the same item, you pre-allocate what % of your order goes to each. E.g. 70% eggs from Supplier A, 30% from Supplier B. This is your sourcing split rule.
+Integrated Business Planning (IBP) — the bridge between your sales forecast and your procurement plan. You need a layer that holds planned demand (forecasted), planned supply (what you intend to order), and lets planners override/approve before execution. Think of it as your planning calendar with consensus demand numbers.
+Safety stock — already in the schema as a column. But it needs to be a calculated, versioned record not just a static number. It should change as demand variability changes.
+Cycle stock — the regular working stock consumed between replenishment cycles. Driven by order frequency and average demand.
+Pipeline stock — inventory already ordered but not yet received (in transit). Your restock orders table captures this, but it needs to be explicitly surfaced as a stock category.
+
+![alt text](<Screenshot 2026-04-23 at 11.15.57 PM.png>)
