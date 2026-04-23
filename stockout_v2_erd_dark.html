@@ -1,0 +1,339 @@
+
+<div id="erd" style="padding: 0.5rem; background: #000; border-radius: 12px;"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: true,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    background: '#000000',
+    primaryColor: '#1a1a2e',
+    primaryTextColor: '#e2e0d6',
+    primaryBorderColor: '#4a4870',
+    lineColor: '#6b68a0',
+    secondaryColor: '#0d0d1a',
+    tertiaryColor: '#111124',
+    edgeLabelBackground: '#000000',
+    attributeBackgroundColorEven: '#0d0d1a',
+    attributeBackgroundColorOdd: '#111124',
+    textColor: '#c2c0b6',
+    nodeBorder: '#4a4870',
+    clusterBkg: '#0d0d1a',
+    titleColor: '#e2e0d6',
+    relationLabelColor: '#9c9a92',
+  },
+});
+const diagram = `erDiagram
+
+  %% ── CORE ──────────────────────────────────────────────
+  organizations ||--o{ locations : "has"
+  organizations ||--o{ products : "sells"
+  organizations ||--o{ inventory_items : "stocks"
+
+  %% ── BOM ───────────────────────────────────────────────
+  products ||--o{ bill_of_materials : "made from"
+  inventory_items ||--o{ bill_of_materials : "used in"
+
+  %% ── SALES ─────────────────────────────────────────────
+  products ||--o{ sales_line_items : "sold via"
+  sales_transactions ||--o{ sales_line_items : "contains"
+  locations ||--o{ sales_transactions : "records"
+
+  %% ── SOURCING SPLIT ────────────────────────────────────
+  inventory_items ||--o{ sourcing_rules : "sourced by"
+  suppliers ||--o{ sourcing_rules : "allocated in"
+  suppliers ||--o{ supplier_catalog : "lists"
+  inventory_items ||--o{ supplier_catalog : "priced in"
+
+  %% ── IBP ───────────────────────────────────────────────
+  organizations ||--o{ ibp_planning_cycles : "runs"
+  ibp_planning_cycles ||--o{ ibp_demand_plans : "contains"
+  ibp_planning_cycles ||--o{ ibp_supply_plans : "contains"
+  products ||--o{ ibp_demand_plans : "planned for"
+  inventory_items ||--o{ ibp_supply_plans : "planned for"
+  locations ||--o{ ibp_demand_plans : "scoped to"
+  locations ||--o{ ibp_supply_plans : "scoped to"
+
+  %% ── STOCK POSITIONS ───────────────────────────────────
+  inventory_items ||--o{ stock_policy : "governed by"
+  locations ||--o{ stock_policy : "scoped to"
+  inventory_items ||--o{ inventory_snapshots : "tracked by"
+  locations ||--o{ inventory_snapshots : "at"
+  inventory_items ||--o{ pipeline_stock : "in transit"
+  restock_orders ||--o{ pipeline_stock : "generates"
+
+  %% ── RESTOCK ───────────────────────────────────────────
+  restock_orders ||--o{ restock_order_lines : "has lines"
+  suppliers ||--o{ restock_orders : "fulfills"
+  locations ||--o{ restock_orders : "delivers to"
+
+  %% ── TABLES ────────────────────────────────────────────
+
+  organizations {
+    uuid id PK
+    string name
+    string business_type
+    string default_currency
+    jsonb settings
+    timestamp created_at
+    timestamp deleted_at
+  }
+
+  locations {
+    uuid id PK
+    uuid org_id FK
+    string name
+    string type
+    string timezone
+    timestamp created_at
+    timestamp deleted_at
+  }
+
+  products {
+    uuid id PK
+    uuid org_id FK
+    string sku
+    string name
+    string category
+    string unit_of_measure
+    bool is_composite
+    jsonb attributes
+    timestamp created_at
+    timestamp deleted_at
+  }
+
+  inventory_items {
+    uuid id PK
+    uuid org_id FK
+    uuid location_id FK
+    string sku
+    string name
+    string unit_of_measure
+    bool is_perishable
+    int shelf_life_days
+    jsonb attributes
+    timestamp created_at
+    timestamp deleted_at
+  }
+
+  bill_of_materials {
+    uuid id PK
+    uuid product_id FK
+    uuid inventory_item_id FK
+    float quantity_required
+    string unit_of_measure
+    float waste_factor_pct
+    timestamp valid_from
+    timestamp valid_to
+  }
+
+  sales_transactions {
+    uuid id PK
+    uuid org_id FK
+    uuid location_id FK
+    string channel
+    string external_ref
+    timestamp transacted_at
+    timestamp created_at
+  }
+
+  sales_line_items {
+    uuid id PK
+    uuid transaction_id FK
+    uuid product_id FK
+    float quantity
+    float unit_price
+    string currency
+    timestamp created_at
+  }
+
+  sourcing_rules {
+    uuid id PK
+    uuid org_id FK
+    uuid inventory_item_id FK
+    uuid supplier_id FK
+    float allocation_pct
+    int priority_rank
+    bool is_preferred
+    string transfer_type
+    timestamp valid_from
+    timestamp valid_to
+  }
+
+  suppliers {
+    uuid id PK
+    uuid org_id FK
+    string name
+    string contact_email
+    string contact_phone
+    int default_lead_time_days
+    string reliability_tier
+    timestamp created_at
+    timestamp deleted_at
+  }
+
+  supplier_catalog {
+    uuid id PK
+    uuid supplier_id FK
+    uuid inventory_item_id FK
+    float moq
+    float max_order_qty
+    float unit_price
+    string currency
+    int lead_time_days
+    string fulfillment_reliability
+    timestamp valid_from
+    timestamp valid_to
+  }
+
+  ibp_planning_cycles {
+    uuid id PK
+    uuid org_id FK
+    string name
+    string status
+    string horizon_type
+    date period_start
+    date period_end
+    string created_by
+    timestamp approved_at
+    timestamp created_at
+  }
+
+  ibp_demand_plans {
+    uuid id PK
+    uuid planning_cycle_id FK
+    uuid product_id FK
+    uuid location_id FK
+    date bucket_date
+    string bucket_type
+    float statistical_forecast
+    float consensus_forecast
+    float actual_sales
+    float override_qty
+    string override_reason
+    string status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  ibp_supply_plans {
+    uuid id PK
+    uuid planning_cycle_id FK
+    uuid inventory_item_id FK
+    uuid location_id FK
+    date bucket_date
+    string bucket_type
+    float planned_receipts
+    float planned_orders
+    float projected_stock
+    float coverage_days
+    string status
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  stock_policy {
+    uuid id PK
+    uuid inventory_item_id FK
+    uuid location_id FK
+    float safety_stock_qty
+    float safety_stock_days
+    string safety_stock_method
+    float cycle_stock_qty
+    float cycle_stock_days
+    int replenishment_cycle_days
+    float avg_daily_demand
+    float demand_std_dev
+    float service_level_target
+    float z_score
+    string calculation_method
+    timestamp calculated_at
+    timestamp valid_from
+    timestamp valid_to
+  }
+
+  inventory_snapshots {
+    uuid id PK
+    uuid inventory_item_id FK
+    uuid location_id FK
+    float qty_on_hand
+    float qty_reserved
+    float qty_available
+    float safety_stock_qty
+    float cycle_stock_qty
+    float pipeline_stock_qty
+    string snapshot_type
+    string source
+    timestamp snapshotted_at
+  }
+
+  pipeline_stock {
+    uuid id PK
+    uuid inventory_item_id FK
+    uuid location_id FK
+    uuid restock_order_id FK
+    float qty_in_transit
+    float qty_received
+    timestamp expected_at
+    timestamp received_at
+    string status
+    timestamp created_at
+  }
+
+  restock_orders {
+    uuid id PK
+    uuid org_id FK
+    uuid location_id FK
+    uuid supplier_id FK
+    string status
+    string trigger_type
+    uuid ibp_supply_plan_id FK
+    timestamp ordered_at
+    timestamp expected_at
+    timestamp received_at
+    timestamp created_at
+  }
+
+  restock_order_lines {
+    uuid id PK
+    uuid restock_order_id FK
+    uuid inventory_item_id FK
+    float qty_ordered
+    float qty_received
+    float unit_price
+    string currency
+    timestamp created_at
+  }
+`;
+const { svg } = await mermaid.render('erd-svg', diagram);
+document.getElementById('erd').innerHTML = svg;
+const svgEl = document.querySelector('#erd svg');
+if (svgEl) { svgEl.style.background = '#000000'; svgEl.style.borderRadius = '8px'; }
+document.querySelectorAll('#erd svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd svg .row-rect-odd path, #erd svg .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>
