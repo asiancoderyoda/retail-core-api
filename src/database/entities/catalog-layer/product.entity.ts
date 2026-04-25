@@ -5,12 +5,22 @@ import {
   CreateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { Organization } from '../core/organization.entity';
+import { Organization } from '../tenant-layer/organization.entity';
 
-/**
- * Sellable product. Can be a restaurant dish, or a retail product. 
- * If isComposite=true, then it's a restaurant dish which is made up of multiple inventory items. 
- * If isComposite=false, then it's a simple retail product which is made up of a single inventory item.
+/*
+ * PRODUCT (SELLABLE ENTITY)
+ *
+ * Represents what is sold to customer.
+ *
+ * Retail:
+ * - maps 1:1 to planning item
+ *
+ * Restaurant:
+ * - maps to multiple planning items via BOM
+ *
+ * Future:
+ * - pricing
+ * - category hierarchy
  */
 @Entity("products")
 export class Product {
@@ -18,9 +28,9 @@ export class Product {
   id: string;
 
   @ManyToOne(() => Organization)
-  org: Organization;
+  organization: Organization;
 
-  @Column({ unique: true })
+  @Column()
   sku: string;
 
   @Column()
@@ -29,11 +39,8 @@ export class Product {
   @Column()
   category: string;
 
-  @Column()
-  unitOfMeasure: string; // piece, plate
-
   @Column({ default: false })
-  isComposite: boolean; // true for restaurant dishes
+  isComposite: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

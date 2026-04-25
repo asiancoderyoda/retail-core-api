@@ -5,8 +5,21 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Product } from './product.entity';
-import { InventoryItem } from './inventory-item.entity';
+import { PlanningItem } from './planning-item.entity';
 
+/*
+ * BILL OF MATERIALS (BOM)
+ *
+ * Maps product → planning item consumption
+ *
+ * Enables:
+ * - ingredient demand explosion
+ * - manufacturing logic
+ *
+ * Future:
+ * - versioning
+ * - conditional BOMs
+ */
 @Entity("bill_of_materials")
 export class BillOfMaterial {
   @PrimaryGeneratedColumn("uuid")
@@ -15,27 +28,15 @@ export class BillOfMaterial {
   @ManyToOne(() => Product)
   product: Product;
 
-  @ManyToOne(() => InventoryItem)
-  inventoryItem: InventoryItem;
+  @ManyToOne(() => PlanningItem)
+  planningItem: PlanningItem;
 
   @Column("float")
   quantityRequired: number;
 
-  @Column()
-  unitOfMeasure: string;
-
-  @Column({ default: 0 })
+  @Column("float", { default: 0 })
   yieldLossPct: number;
 
   @Column({ default: false })
   substitutable: boolean;
-
-  @Column({ default: 1 })
-  priority: number;
-
-  @Column({ type: "timestamp", nullable: true })
-  validFrom: Date;
-
-  @Column({ type: "timestamp", nullable: true })
-  validTo: Date;
 }

@@ -4,15 +4,23 @@ import {
   Column,
   ManyToOne,
 } from 'typeorm';
-import { InventoryItem } from '../catalog-layer/inventory-item.entity';
-
+import { PlanningItem } from '../catalog-layer/planning-item.entity';
+import { Location } from '../tenant-layer/location.entity';
+/*
+ * INVENTORY SNAPSHOT
+ *
+ * Current stock state
+ *
+ * Enables:
+ * - real inventory visibility
+ */
 @Entity("inventory_snapshots")
 export class InventorySnapshot {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => InventoryItem)
-  inventoryItem: InventoryItem;
+  @ManyToOne(() => PlanningItem)
+  planningItem: PlanningItem;
 
   @ManyToOne(() => Location)
   location: Location;
@@ -22,12 +30,6 @@ export class InventorySnapshot {
 
   @Column("float", { default: 0 })
   reserved: number;
-
-  @Column("float", { default: 0 })
-  pipeline: number;
-
-  @Column("float", { default: 0 })
-  availableToPromise: number;
 
   @Column({ type: "timestamp" })
   snapshotTime: Date;
