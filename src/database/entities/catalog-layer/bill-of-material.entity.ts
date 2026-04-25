@@ -39,4 +39,7 @@ export class BillOfMaterial {
 
   @Column({ default: false })
   substitutable: boolean;
+
+  @Column({ default: 1 })
+  priority: number;
 }

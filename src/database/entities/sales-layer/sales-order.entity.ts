@@ -33,4 +33,10 @@ export class SalesOrder {
 
   @Column({ type: "timestamp" })
   orderTime: Date;
+
+  @Column("float")
+  totalAmount: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

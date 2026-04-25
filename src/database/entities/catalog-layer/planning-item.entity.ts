@@ -54,6 +54,12 @@ export class PlanningItem {
   @Column({ default: true })
   active: boolean;
 
+  @Column({ nullable: true })
+  shelfLifeDays: number;
+
+  @Column({ nullable: true })
+  maxStorageCapacity: number;
+
   @CreateDateColumn()
   createdAt: Date;
 }

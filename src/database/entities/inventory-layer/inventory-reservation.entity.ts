@@ -3,24 +3,18 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  CreateDateColumn,
 } from 'typeorm';
 import { PlanningItem } from '../catalog-layer/planning-item.entity';
 import { Location } from '../tenant-layer/location.entity';
 
 /*
- * DEMAND HISTORY
+ * INVENTORY RESERVATION
  *
- * Daily aggregated demand per planning item
- *
- * Source:
- * - direct sales OR BOM explosion
- *
- * Enables:
- * - forecasting
+ * Stock blocked/reserved.
  */
-
-@Entity("demand_history")
-export class DemandHistory {
+@Entity("inventory_reservations")
+export class InventoryReservation {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -30,9 +24,12 @@ export class DemandHistory {
   @ManyToOne(() => Location)
   location: Location;
 
-  @Column({ type: "date" })
-  bucketDate: string;
-
   @Column("float")
-  unitsConsumed: number;
+  reservedQty: number;
+
+  @Column()
+  reason: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

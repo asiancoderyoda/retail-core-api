@@ -10,14 +10,19 @@ import { Location } from '../tenant-layer/location.entity';
 /*
  * DEMAND FORECAST
  *
- * Stores predicted demand
+ * Forecasted planning item demand.
  *
- * Enables:
+ * * Enables:
  * - planning
  * - AI input
  *
  * Future:
  * - multiple forecast models
+ * 
+ * Supports:
+ * - volatility
+ * - seasonality
+ * - planner overrides later
  */
 @Entity("demand_forecasts")
 export class DemandForecast {
@@ -37,8 +42,17 @@ export class DemandForecast {
   avgDailyDemand: number;
 
   @Column("float")
+  p50: number;
+
+  @Column("float")
   p90: number;
 
   @Column("float")
   demandStdDev: number;
+
+  @Column("float", { default: 1 })
+  seasonalityIndex: number;
+
+  @Column({ nullable: true })
+  manualOverrideReason: string;
 }

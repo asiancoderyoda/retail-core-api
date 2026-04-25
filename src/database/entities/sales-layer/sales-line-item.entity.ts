@@ -29,4 +29,7 @@ export class SalesLineItem {
 
   @Column("float")
   quantity: number;
+  
+  @Column("float", { nullable: true })
+  unitPrice: number;
 }

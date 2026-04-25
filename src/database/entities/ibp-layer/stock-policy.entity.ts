@@ -8,19 +8,12 @@ import { PlanningItem } from '../catalog-layer/planning-item.entity';
 import { Location } from '../tenant-layer/location.entity';
 
 /*
- * DEMAND HISTORY
+ * STOCK POLICY
  *
- * Daily aggregated demand per planning item
- *
- * Source:
- * - direct sales OR BOM explosion
- *
- * Enables:
- * - forecasting
+ * Deterministic stock planning policy configuration.
  */
-
-@Entity("demand_history")
-export class DemandHistory {
+@Entity("stock_policies")
+export class StockPolicy {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -30,9 +23,15 @@ export class DemandHistory {
   @ManyToOne(() => Location)
   location: Location;
 
-  @Column({ type: "date" })
-  bucketDate: string;
+  @Column("float")
+  serviceLevel: number;
 
   @Column("float")
-  unitsConsumed: number;
+  reviewPeriodDays: number;
+
+  @Column("float")
+  leadTimeStdDev: number;
+
+  @Column({ default: true })
+  autoCompute: boolean;
 }

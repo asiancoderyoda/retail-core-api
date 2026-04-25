@@ -2,21 +2,22 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { Organization } from '../tenant-layer/organization.entity';
+
 /*
- * DOMAIN EVENTS
+ * SCENARIO SIMULATION
  *
- * Event driven backbone
+ * What-if planning runs.
  *
- * Enables:
- * - async workflows
- * - eventual consistency
+ * Future:
+ * - festive uplift
+ * - supplier failure
  */
-@Entity("domain_events")
-export class DomainEvent {
+@Entity("scenario_simulations")
+export class ScenarioSimulation {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -24,13 +25,13 @@ export class DomainEvent {
   organization: Organization;
 
   @Column()
-  eventType: string;
+  simulationType: string;
 
   @Column("jsonb")
-  payload: any;
+  inputAssumptions: any;
 
-  @Column({ default: false })
-  processed: boolean;
+  @Column("jsonb")
+  outputResult: any;
 
   @CreateDateColumn()
   createdAt: Date;

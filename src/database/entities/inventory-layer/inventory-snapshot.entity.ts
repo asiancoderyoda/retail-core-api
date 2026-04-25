@@ -9,11 +9,12 @@ import { Location } from '../tenant-layer/location.entity';
 /*
  * INVENTORY SNAPSHOT
  *
- * Current stock state
+ * Current physical stock state
  *
  * Enables:
  * - real inventory visibility
  */
+
 @Entity("inventory_snapshots")
 export class InventorySnapshot {
   @PrimaryGeneratedColumn("uuid")
