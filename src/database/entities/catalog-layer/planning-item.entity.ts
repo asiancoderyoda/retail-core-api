@@ -6,6 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Organization } from '../tenant-layer/organization.entity';
+import { Location } from '../tenant-layer/location.entity';
 
 /*
  * PLANNING ITEM (MOST IMPORTANT ENTITY)
@@ -34,6 +35,9 @@ export class PlanningItem {
 
   @ManyToOne(() => Organization)
   organization: Organization;
+
+  @ManyToOne(() => Location)
+  location: Location;
 
   @Column()
   code: string;

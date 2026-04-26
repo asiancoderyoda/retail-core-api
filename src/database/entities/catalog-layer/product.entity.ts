@@ -6,6 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Organization } from '../tenant-layer/organization.entity';
+import { Location } from '../tenant-layer/location.entity';
 
 /*
  * PRODUCT (SELLABLE ENTITY)
@@ -29,6 +30,9 @@ export class Product {
 
   @ManyToOne(() => Organization)
   organization: Organization;
+
+  @ManyToOne(() => Location)
+  location: Location;
 
   @Column()
   sku: string;

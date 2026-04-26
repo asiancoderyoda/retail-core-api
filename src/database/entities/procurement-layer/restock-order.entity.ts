@@ -22,11 +22,11 @@ export class RestockOrder {
     @ManyToOne(() => Organization)
     organization: Organization;
 
-    @ManyToOne(() => Supplier)
-    supplier: Supplier;
-
     @ManyToOne(() => Location)
     location: Location;
+
+    @ManyToOne(() => Supplier)
+    supplier: Supplier;
 
     @Column()
     status: string;

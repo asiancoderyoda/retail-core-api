@@ -29,6 +29,9 @@ export class PipelineStock {
   @Column("float")
   quantity: number;
 
+  @Column("float")
+  unitPrice: number;
+
   @Column({ type: "timestamp" })
   expectedArrival: Date;
 

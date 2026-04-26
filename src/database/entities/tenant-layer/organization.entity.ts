@@ -4,6 +4,8 @@ import {
   Column,
   CreateDateColumn,
 } from 'typeorm';
+import { BusinessType } from '../../../common/enums/BusinessType.enum';
+import { Currency } from '../../../common/enums/Currency.enum';
 
 /*
  * ORGANIZATION (TENANT ROOT)
@@ -26,11 +28,11 @@ export class Organization {
   @Column()
   name: string;
 
-  @Column()
-  businessType: "retail" | "restaurant" | "manufacturing";
+  @Column({ type: "enum", enum: BusinessType, default: BusinessType.RETAIL })
+  businessType: BusinessType;
 
-  @Column({ default: "INR" })
-  currency: string;
+  @Column({ type: "enum", enum: Currency, default: Currency.INR })
+  currency: Currency;
 
   @Column()
   timezone: string;

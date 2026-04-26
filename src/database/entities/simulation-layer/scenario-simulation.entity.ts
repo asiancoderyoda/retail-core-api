@@ -24,6 +24,9 @@ export class ScenarioSimulation {
   @ManyToOne(() => Organization)
   organization: Organization;
 
+  @ManyToOne(() => Location)
+  location: Location;
+
   @Column()
   simulationType: string;
 

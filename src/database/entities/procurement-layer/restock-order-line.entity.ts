@@ -26,4 +26,7 @@ export class RestockOrderLine {
 
   @Column("float", { default: 0 })
   receivedQty: number;
+
+  @Column("float")
+  unitPrice: number;
 }

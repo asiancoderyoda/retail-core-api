@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { PlanningItem } from '../catalog-layer/planning-item.entity';
+import { Location } from '../tenant-layer/location.entity';
 
 /*
  * AI PLANNING RUN
@@ -26,6 +27,9 @@ export class AiPlanningRun {
 
   @ManyToOne(() => PlanningItem)
   planningItem: PlanningItem;
+
+  @ManyToOne(() => Location)
+  location: Location;
 
   @Column("jsonb")
   inputPayload: any;

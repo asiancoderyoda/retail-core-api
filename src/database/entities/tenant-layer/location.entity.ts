@@ -6,6 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Organization } from './organization.entity';
+import { LocationType } from '../../../common/enums/LocationType.enum';
 
 /*
  * LOCATION
@@ -35,7 +36,16 @@ export class Location {
   name: string;
 
   @Column()
-  type: "store" | "warehouse" | "kitchen";
+  address: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  phone: string;
+
+  @Column({ type: "enum", enum: LocationType })
+  type: LocationType;
 
   @CreateDateColumn()
   createdAt: Date;

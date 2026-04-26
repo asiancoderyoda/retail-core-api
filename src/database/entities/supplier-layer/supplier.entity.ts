@@ -31,6 +31,9 @@ export class Supplier {
     @Column()
     contactPhone: string;
 
+    @Column()
+    contactEmail: string;
+
     @Column("float", { default: 1 })
     reliabilityScore: number;
 
