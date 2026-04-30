@@ -29,7 +29,10 @@ export class Location {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Organization)
+  @ManyToOne(() => Organization, {
+    nullable: false,
+    onDelete: 'CASCADE'
+  })
   organization: Organization;
 
   @Column()
