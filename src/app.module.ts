@@ -4,6 +4,7 @@ import { CacheModule } from './cache/cache.module';
 import { TypeOrmModule } from './database/typeorm/typeorm.module';
 import { HealthModule } from './health/health.module';
 import { TenantModule } from './modules/tenant/tenant.module';
+import { CatalogModule } from './modules/catalog/catalog.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { TenantModule } from './modules/tenant/tenant.module';
     TypeOrmModule,
     HealthModule,
     TenantModule,
+    CatalogModule,
   ],
 })
 export class AppModule {}

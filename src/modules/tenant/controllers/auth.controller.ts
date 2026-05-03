@@ -1,6 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { OrganizationService } from '../services/organization.service';
-import { LocationService } from '../services/location.service';
+import { LocationService, OrganizationService } from '../services';
 
 @Controller('v1/auth')
 export class AuthController {

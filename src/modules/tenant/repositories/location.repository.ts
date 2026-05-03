@@ -11,4 +11,13 @@ export class LocationRepository {
     private readonly repo: Repository<Location>,
   ) {}
 
+  async belongsToOrganization(
+    locationId: string,
+    organizationId: string,
+  ): Promise<boolean> {
+    const count = await this.repo.count({
+      where: { id: locationId, organization: { id: organizationId } },
+    });
+    return count > 0;
+  }
 }
