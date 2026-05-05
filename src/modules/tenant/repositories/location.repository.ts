@@ -9,7 +9,23 @@ export class LocationRepository {
   constructor(
     @InjectRepository(Location)
     private readonly repo: Repository<Location>,
-  ) {}
+  ) { }
+
+  create(data: Partial<Location>) {
+    return this.repo.create(data);
+  }
+
+  saveMany(locations: Location[]) {
+    return this.repo.save(locations);
+  }
+
+  findByOrganizationId(organizationId: string) {
+    return this.repo.find({
+      where: {
+        organization: { id: organizationId },
+      },
+    });
+  }
 
   async belongsToOrganization(
     locationId: string,

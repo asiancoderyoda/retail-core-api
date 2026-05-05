@@ -13,9 +13,11 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  // Keycloak subject UUID
-  @Column({ unique: true })
-  externalId: string;
+  @Column({ nullable: true })
+  authProvider: string;
+
+  @Column({ unique: true, nullable: true })
+  externalAuthId: string;
 
   @Column()
   email: string;
